@@ -70,7 +70,7 @@ def get_pretty_tasks(tasks: list[Task]):
             task.description,
             task.priority,
             task.status,
-            task.categories,
+            task.category,
             task.deadline,
             message,
         ]]

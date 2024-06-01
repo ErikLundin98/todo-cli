@@ -15,7 +15,7 @@ class Task(BaseModel):
     description: str
     priority: TaskPriorityLevel
     status: TaskStatus
-    categories: list[str] = []
+    category: list[str] = []
     creation_datetime: datetime = datetime.now()
     deadline: datetime | None = None
     completion_datetime: datetime | None = None
@@ -41,7 +41,7 @@ class TaskORM(Base):
     description = Column(String)
     priority = Column(String)  # Assuming TaskPriorityLevel is a string enum
     status = Column(String)  # Assuming TaskStatus is a string enum
-    categories = Column(String)  # Assuming categories will be stored as comma-separated values
+    category = Column(String)  # Assuming categories will be stored as comma-separated values
     creation_datetime = Column(DateTime, default=datetime.now)
     deadline = Column(DateTime, nullable=True)
     completion_datetime = Column(DateTime, nullable=True)
@@ -56,7 +56,7 @@ def orm_to_pydantic(task_orm: TaskORM) -> Task:
         description=task_orm.description,
         priority=task_orm.priority,
         status=task_orm.status,
-        categories=task_orm.categories.split(',') if task_orm.categories else [],
+        category=task_orm.category.split(',') if task_orm.category else [],
         creation_datetime=task_orm.creation_datetime,
         deadline=task_orm.deadline,
         completion_datetime=task_orm.completion_datetime
@@ -68,7 +68,7 @@ def pydantic_to_orm(task: Task, clone_id: bool = False) -> TaskORM:
         description=task.description,
         priority=task.priority,
         status=task.status,
-        categories=','.join(task.categories),
+        category=','.join(task.category),
         creation_datetime=task.creation_datetime,
         deadline=task.deadline,
         completion_datetime=task.completion_datetime

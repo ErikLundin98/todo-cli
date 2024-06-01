@@ -17,7 +17,7 @@ def handle_add(args: Namespace):
         description=args.description,
         priority=args.priority,
         status=args.status,
-        categories=args.category,
+        category=args.category,
         deadline=deadline,
     )
     with Session() as session:
@@ -75,7 +75,7 @@ def handle_list(args: Namespace):
             orm_to_pydantic(task) for task in result
         ]
     if args.category:
-        tasks = [task for task in tasks if set(task.categories) & set(args.category)]
+        tasks = [task for task in tasks if set(task.category) & set(args.category)]
     if args.week:
         tasks = [
             task for task in tasks 

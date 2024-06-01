@@ -11,6 +11,7 @@ The functionality is currently limited to the following:
 - LLM support to ease task creation
 - Some clever way to integrate with mobile devices
 - Auto sync
+- Automatic reminders
 
 ## Installation
 
@@ -23,3 +24,15 @@ git clone https://github.com/ErikLundin98/todo-cli
 cd todo-cli
 make install_cli
 ```
+
+## Usage examples
+
+List todos:
+
+`todo --help`: Get some help :)
+
+`todo list`: List all TODO:s
+
+`todo list --today`: List all TODO:s due today
+
+`todo add "Help with the dishes" --priority 1 --category home cleaning --today`: Create TODO that needs to be done today with top priority and category "home" and "cleaning"
