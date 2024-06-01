@@ -6,12 +6,14 @@ The functionality is currently limited to the following:
 - Add, list, update & delete TODO:s
 - Sync todo:s using git
 
-## Future development
+## Backlog
 
+- Add support for subtasks
 - LLM support to ease task creation
 - Some clever way to integrate with mobile devices
-- Auto sync
+- Auto sync on updates
 - Automatic reminders
+- Clean up code
 
 ## Installation
 
