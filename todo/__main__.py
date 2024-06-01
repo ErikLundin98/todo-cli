@@ -53,18 +53,22 @@ parser_sync.add_argument("-i", "--init-repository", type=str, required=False, he
 parser_sync.add_argument('--pull', action="store_true", help='Overwrite local db with what is in remote git repository')
 parser_sync.add_argument('--push', action="store_true", help='Overwrite remote git repository with what is in local db')
 
+def main():
+    args = parser.parse_args()
+    match args.command:
+        case "add":
+            handle_add(args)
+        case "update":
+            handle_update(args)
+        case "list":
+            handle_list(args)
+        case "remove":
+            handle_remove(args)
+        case "sync":
+            handle_sync(args)
+        case _:
+            print("could not recognize the given command.")
 
-args = parser.parse_args()
-match args.command:
-    case "add":
-        handle_add(args)
-    case "update":
-        handle_update(args)
-    case "list":
-        handle_list(args)
-    case "remove":
-        handle_remove(args)
-    case "sync":
-        handle_sync(args)
-    case _:
-        print("could not recognize the given command.")
+
+if __name__ == "__main__":
+    main()
