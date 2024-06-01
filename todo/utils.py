@@ -38,7 +38,7 @@ def is_current_day(timestamp: datetime) -> bool:
 
 def is_task_overdue(task: Task) -> bool:
     """Return whether task is overdue or not."""
-    return datetime.now() > task.deadline and task.status != TaskStatus.DONE
+    return task.deadline and datetime.now() > task.deadline and task.status != TaskStatus.DONE
 
 def get_pretty_tasks(tasks: list[Task]):
     """Pretty table representation of list of tasks."""
@@ -59,9 +59,9 @@ def get_pretty_tasks(tasks: list[Task]):
             message = color_text("All done.", CommandLineColor.GREEN) + emojize(":check_mark_button:")
         elif task.status == TaskStatus.IN_PROGRESS:
             message = color_text("Keep grinding king.", CommandLineColor.CYAN) + emojize(":crown:")
-        elif task.status == TaskStatus.TODO and task.deadline <= get_end_of_day():
+        elif task.status == TaskStatus.TODO and task.deadline and task.deadline <= get_end_of_day():
             message = color_text("Time to start this one.", CommandLineColor.ORANGE) + emojize(":alarm_clock:")
-        elif task.status == TaskStatus.TODO and task.deadline <= get_end_of_week():
+        elif task.status == TaskStatus.TODO and task.deadline and task.deadline <= get_end_of_week():
             message = color_text("Are you on top of this?", CommandLineColor.YELLOW) + emojize(":spiral_calendar:")
         else:
             message = "No rush." + emojize(":sloth:")
