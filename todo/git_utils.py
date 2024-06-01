@@ -8,7 +8,7 @@ from todo.constants import DB_NAME, DB_PATH, GIT_REPO_DIR
 
 def clone(url: str):
     Repo.clone_from(url, GIT_REPO_DIR)
-    print(f"Successfully clone remote repository {url}")
+    print(f"Successfully cloned remote repository {url}")
 
 def pull():
     print("Pulling latest changes from remote git repository")

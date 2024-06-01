@@ -106,5 +106,6 @@ def handle_sync(args: Namespace):
         git_utils.pull()
         git_utils.copy_git_db_to_local_folder()
     if args.push:
+        git_utils.pull()
         git_utils.copy_local_db_to_git_repo()
         git_utils.push()
