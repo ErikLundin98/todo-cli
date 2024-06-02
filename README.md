@@ -37,7 +37,7 @@ List todos:
 
 `todo list --today`: List all TODO:s due today
 
-`todo add "Help with the dishes" --priority 1 --category home cleaning --today`: Create TODO that needs to be done today with top priority and category "home" and "cleaning"
+`todo add "Wash the dishes" --priority 1 --category home cleaning --today`: Create TODO that needs to be done today with top priority and category "home" and "cleaning"
 
 TODO:s are stored and managed in a sqlite database. As a hacky cross-device sync solution, you can synchronize the database using a git repo:
 
