@@ -2,9 +2,11 @@ from datetime import datetime, time, timedelta
 
 from emoji import emojize
 from tabulate import tabulate
-from todo.constants import EXPECTED_DATETIME_FORMAT, CommandLineColor, TaskStatus
+from todo.constants import EXPECTED_DATETIME_FORMAT, CommandLineColor, TaskPriorityLevel, TaskStatus
 from todo.task_orm import Task
 
+def parse_task_priority_level(arg: str) -> TaskPriorityLevel:
+    return TaskPriorityLevel(int(arg))
 
 def parse_datetime(arg: str) -> datetime:
     if " " not in arg: # Assume no time is passed.
@@ -59,7 +61,7 @@ def get_pretty_tasks(tasks: list[Task]):
             message = color_text("All done.", CommandLineColor.GREEN) + emojize(":check_mark_button:")
         elif task.status == TaskStatus.IN_PROGRESS:
             message = color_text("Keep grinding king.", CommandLineColor.CYAN) + emojize(":crown:")
-        elif task.status == TaskStatus.TODO and task.deadline and task.deadline <= get_end_of_day():
+        elif task.status == TaskStatus.TODO and task.deadline and task.deadline <= datetime.today() + timedelta(hours=24):
             message = color_text("Time to start this one.", CommandLineColor.ORANGE) + emojize(":alarm_clock:")
         elif task.status == TaskStatus.TODO and task.deadline and task.deadline <= get_end_of_week():
             message = color_text("Are you on top of this?", CommandLineColor.YELLOW) + emojize(":spiral_calendar:")

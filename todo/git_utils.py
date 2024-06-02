@@ -20,7 +20,7 @@ def pull():
 def push():
     print("Pushing latest data from repository")
     repo = Repo(GIT_REPO_DIR)
-    repo.git.add(A=True)
+    repo.git.add([DB_NAME])
     repo.index.commit(f"DB sync {datetime.now()}")
     origin = repo.remotes.origin
     origin.push()

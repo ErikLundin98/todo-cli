@@ -2,7 +2,7 @@ import argparse
 
 from todo.constants import EXPECTED_DATETIME_FORMAT, EXPECTED_DATETIME_FORMAT_STRING, TaskPriorityLevel, TaskStatus
 from todo.commands import handle_add, handle_list, handle_remove, handle_sync, handle_update
-from todo.utils import parse_datetime
+from todo.utils import parse_datetime, parse_task_priority_level
 
 parser = argparse.ArgumentParser(
     prog="todo",
@@ -16,8 +16,8 @@ parser_add = subparsers.add_parser("add", aliases=["a"], help="Add a new task")
 parser_add.add_argument("description", type=str, help="Description to set for task")
 parser_add.add_argument('--today', action="store_true", help='Shorthand argument for setting deadline to EOD today')
 parser_add.add_argument('--week', action="store_true", help='Shorthand argument for setting deadline to EOW')
-parser_add.add_argument("-i", "--priority", type=TaskPriorityLevel, required=False, default=TaskPriorityLevel.LOW, help=f"Priority to set for task ({list(TaskPriorityLevel)}). Defaults to low")
-parser_add.add_argument("-s", "--status", type=TaskStatus, required=False, default=TaskStatus.TODO, help=f"Status to set for task ({list(TaskStatus)}). Defaults to todo")
+parser_add.add_argument("-p", "--priority", type=parse_task_priority_level, required=False, default=TaskPriorityLevel.LOW, help=f"Priority to set for task. Defaults to low", choices=list(TaskPriorityLevel))
+parser_add.add_argument("-s", "--status", type=TaskStatus, required=False, default=TaskStatus.TODO, help=f"Status to set for task. Defaults to todo", choices=list(TaskStatus))
 parser_add.add_argument("-c", "--category", type=str, nargs="+", required=False, default=[], help="Category/Categories to set for task")
 parser_add.add_argument("-dl", "--deadline", type=parse_datetime, required=False, default=None, help=f"Optional due date of the task (format: {EXPECTED_DATETIME_FORMAT_STRING}). Time is optional, and will default to EOD.")
 
@@ -31,8 +31,8 @@ parser_update.add_argument('--todo', action="store_true", help='Shorthand argume
 
 
 
-parser_update.add_argument("-d", "--description", type=str, required=False, help=f"Description to set for task ({list(TaskStatus)})")
-parser_update.add_argument("-i", "--priority", type=TaskPriorityLevel, required=False, help=f"Priority to set for task ({list(TaskPriorityLevel)})")
+parser_update.add_argument("-d", "--description", type=str, required=False, help=f"Description to set for task", choices=list(TaskStatus))
+parser_update.add_argument("-i", "--priority", type=parse_task_priority_level, required=False, help=f"Priority to set for task", choices=list(TaskPriorityLevel))
 parser_update.add_argument("-s", "--status", type=TaskStatus, required=False, help="Status to set for task")
 parser_update.add_argument("-c", "--category", type=str, nargs="+", required=False, help="Category/Categories to set for task")
 parser_update.add_argument("-dl", "--deadline", type=parse_datetime, required=False, help=f"Due date of the task (format: {EXPECTED_DATETIME_FORMAT_STRING}). Time is optional, and will default to EOD.")
@@ -41,7 +41,7 @@ parser_list = subparsers.add_parser("list", aliases=["ls"], help="List tasks.")
 parser_list.add_argument('--today', action="store_true", help='Filter on actions due today (or overdue)')
 parser_list.add_argument('--week', action="store_true", help='Filter on actions due this week (or overdue)')
 parser_list.add_argument("-s", "--status", type=TaskStatus, nargs="+", required=False, default=list(TaskStatus), help="Status level to filter for")
-parser_list.add_argument("-i", "--priority", type=TaskPriorityLevel, nargs="+", required=False, default=list(TaskPriorityLevel), help="Priority level to filter for")
+parser_list.add_argument("-i", "--priority", type=parse_task_priority_level, nargs="+", required=False, default=list(TaskPriorityLevel), help="Priority level to filter for")
 parser_list.add_argument("-c", "--category", type=str, nargs="+", required=False, help="Category/categories to filter for")
 
 
@@ -67,7 +67,7 @@ def main():
         case "sync":
             handle_sync(args)
         case _:
-            print("could not recognize the given command.")
+            print("todo: Could not recognize the given command. Try `todo --help` for usage details.")
 
 
 if __name__ == "__main__":
