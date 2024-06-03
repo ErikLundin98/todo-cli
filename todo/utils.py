@@ -22,12 +22,17 @@ def is_current_week(timestamp: datetime) -> bool:
 
 def get_start_of_week() -> datetime:
     """Get start of week as datetime."""
-    today = get_end_of_day()
+    today = get_beginning_of_day()
     return today - timedelta(days=today.weekday())
 
 def get_end_of_week() -> datetime:
     """Get end of week as datetime."""
     return get_start_of_week() + timedelta(days=6)
+
+def get_beginning_of_day() -> datetime:
+    """Get beginning of day as datetime."""
+    today = datetime.now()
+    return datetime.combine(today.date(), time(hour=0, minute=0))
 
 def get_end_of_day() -> datetime:
     """Get end of day as datetime."""

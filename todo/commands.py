@@ -1,5 +1,5 @@
 from argparse import Namespace
-
+from sqlalchemy.sql.expression import nullslast
 from todo import Session
 from todo.constants import TaskPriorityLevel, TaskStatus
 from todo.task_orm import Task, TaskORM, orm_to_pydantic, pydantic_to_orm
@@ -68,7 +68,7 @@ def handle_list(args: Namespace):
             TaskORM.status.in_(status_filter),
             TaskORM.priority.in_(priority_filter)
         ).order_by(
-            TaskORM.deadline.asc(),
+            nullslast(TaskORM.deadline.asc()),
             TaskORM.priority.desc(),
         )
         tasks = [

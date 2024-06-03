@@ -18,9 +18,11 @@ EXPECTED_DATETIME_FORMAT_STRING = "YYYY-MM-DD HH:MM:SS"
 
 class TaskPriorityLevel(IntEnum):
     """Level of priority for tasks."""
-    LOW = 3
-    MEDIUM = 2
-    HIGH = 1
+    LOWEST = 5
+    LOW = 4
+    MEDIUM = 3
+    HIGH = 2
+    HIGHEST = 1
 
 class TaskStatus(StrEnum):
     """Status for task."""

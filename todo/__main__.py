@@ -28,11 +28,8 @@ parser_update.add_argument('--week', action="store_true", help='Shorthand argume
 parser_update.add_argument('--done', action="store_true", help='Shorthand argument for marking task(s) as done')
 parser_update.add_argument('--in-progress', action="store_true", help='Shorthand argument for marking task(s) as in progress')
 parser_update.add_argument('--todo', action="store_true", help='Shorthand argument for marking task(s) as TODO')
-
-
-
 parser_update.add_argument("-d", "--description", type=str, required=False, help=f"Description to set for task", choices=list(TaskStatus))
-parser_update.add_argument("-i", "--priority", type=parse_task_priority_level, required=False, help=f"Priority to set for task", choices=list(TaskPriorityLevel))
+parser_update.add_argument("-p", "--priority", type=parse_task_priority_level, required=False, help=f"Priority to set for task", choices=list(TaskPriorityLevel))
 parser_update.add_argument("-s", "--status", type=TaskStatus, required=False, help="Status to set for task")
 parser_update.add_argument("-c", "--category", type=str, nargs="+", required=False, help="Category/Categories to set for task")
 parser_update.add_argument("-dl", "--deadline", type=parse_datetime, required=False, help=f"Due date of the task (format: {EXPECTED_DATETIME_FORMAT_STRING}). Time is optional, and will default to EOD.")
