@@ -1,7 +1,11 @@
 import argparse
 
-from todo.constants import EXPECTED_DATETIME_FORMAT, EXPECTED_DATETIME_FORMAT_STRING, TaskPriorityLevel, TaskStatus
-from todo.commands import handle_add, handle_list, handle_remove, handle_sync, handle_update
+from todo.commands.add import handle_add
+from todo.commands.list import handle_list
+from todo.commands.remove import handle_remove
+from todo.commands.sync import handle_sync
+from todo.commands.update import handle_update
+from todo.constants import EXPECTED_DATETIME_FORMAT_STRING, TaskPriorityLevel, TaskStatus
 from todo.utils import parse_datetime, parse_task_priority_level
 
 parser = argparse.ArgumentParser(
