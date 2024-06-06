@@ -32,9 +32,9 @@ parser_update.add_argument('--week', action="store_true", help='Shorthand argume
 parser_update.add_argument('--done', action="store_true", help='Shorthand argument for marking task(s) as done')
 parser_update.add_argument('--in-progress', action="store_true", help='Shorthand argument for marking task(s) as in progress')
 parser_update.add_argument('--todo', action="store_true", help='Shorthand argument for marking task(s) as TODO')
-parser_update.add_argument("-d", "--description", type=str, required=False, help=f"Description to set for task", choices=list(TaskStatus))
+parser_update.add_argument("-d", "--description", type=str, required=False, help=f"Description to set for task")
 parser_update.add_argument("-p", "--priority", type=parse_task_priority_level, required=False, help=f"Priority to set for task", choices=list(TaskPriorityLevel))
-parser_update.add_argument("-s", "--status", type=TaskStatus, required=False, help="Status to set for task")
+parser_update.add_argument("-s", "--status", type=TaskStatus, required=False, help="Status to set for task", choices=list(TaskStatus))
 parser_update.add_argument("-c", "--category", type=str, nargs="+", required=False, help="Category/Categories to set for task")
 parser_update.add_argument("-dl", "--deadline", type=parse_datetime, required=False, help=f"Due date of the task (format: {EXPECTED_DATETIME_FORMAT_STRING}). Time is optional, and will default to EOD.")
 
@@ -50,7 +50,12 @@ parser_list = subparsers.add_parser("remove", aliases=["rm"], help="Remove tasks
 parser_list.add_argument("tasks", type=str, nargs="+", help="Task id(s) to remove.")
 
 parser_sync = subparsers.add_parser("sync", aliases=["s"], help="Sync data using git.")
-parser_sync.add_argument("-i", "--init-repository", type=str, required=False, help='Initialize git syncing by cloning a remote repository. SSH keys or other auth method must be setup beforehand.')
+parser_sync.add_argument(
+    "-i", "--init-repository", 
+    type=str, 
+    required=False, 
+    help='Initialize git syncing by cloning a remote repository. SSH keys or other auth method must be setup beforehand. Supply the git address to the repo.'
+)
 parser_sync.add_argument('--pull', action="store_true", help='Overwrite local db with what is in remote git repository')
 parser_sync.add_argument('--push', action="store_true", help='Overwrite remote git repository with what is in local db')
 
