@@ -2,8 +2,9 @@ from datetime import datetime, time, timedelta
 
 from emoji import emojize
 from tabulate import tabulate
+from todo import Session
 from todo.constants import EXPECTED_DATETIME_FORMAT, CommandLineColor, TaskPriorityLevel, TaskStatus
-from todo.task_orm import Task
+from todo.task import SubTask, SubTaskORM, Task
 
 def parse_task_priority_level(arg: str) -> TaskPriorityLevel:
     return TaskPriorityLevel(int(arg))
@@ -67,12 +68,13 @@ def get_pretty_tasks(tasks: list[Task]):
         elif task.status == TaskStatus.IN_PROGRESS:
             message = color_text("Keep grinding king.", CommandLineColor.CYAN) + emojize(":crown:")
         elif task.status == TaskStatus.TODO and task.deadline and task.deadline <= datetime.today() + timedelta(hours=24):
-            message = color_text("Time to start this one.", CommandLineColor.ORANGE) + emojize(":alarm_clock:")
+            message = color_text("Time to start this one.", CommandLineColor.BRIGHT_RED) + emojize(":alarm_clock:")
         elif task.status == TaskStatus.TODO and task.deadline and task.deadline <= get_end_of_week():
             message = color_text("Are you on top of this?", CommandLineColor.YELLOW) + emojize(":spiral_calendar:")
         else:
             message = "No rush." + emojize(":sloth:")
-        table += [[
+
+        table_data = [
             task.task_id,
             task.description,
             task.priority,
@@ -80,7 +82,23 @@ def get_pretty_tasks(tasks: list[Task]):
             task.category,
             task.deadline,
             message,
-        ]]
+        ]
+        subtasks = get_subtasks(task.task_id)
+        if len(subtasks):
+            table_data = [color_text(text, CommandLineColor.UNDERLINE) for text in table_data]
+        
+        table += [table_data]
+        for subtask in subtasks:
+            table += [[
+                emojize(":left_arrow_curving_right:") + f"{subtask.parent_id}.{subtask.sub_task_id}",
+                subtask.description,
+                "",
+                subtask.status,
+                "",
+                "",
+                "",
+            ]]
+
     return tabulate(
         tabular_data=table,
         headers=headers,
@@ -88,6 +106,29 @@ def get_pretty_tasks(tasks: list[Task]):
     )
 
 
-def color_text(text: str, color_ansi: CommandLineColor):
+def color_text(text: str, color_ansi: CommandLineColor | list[CommandLineColor]):
     """Utility function to create string that will render in specific color in command line."""
-    return f"{color_ansi}{text}{CommandLineColor.RESET}"
+    if isinstance(color_ansi, list):
+        color_ansi = "".join(color_ansi)
+    return f"{color_ansi}{text}{CommandLineColor.RESET_ALL_ATTRIBUTES}"
+
+def get_subtasks(task_id: int) -> list[SubTask]:
+    """Get all subtasks associated with a subtask."""
+    with Session() as session:
+        result = session.query(SubTaskORM).filter(
+            SubTaskORM.parent_id == task_id,
+        ).order_by(SubTaskORM.sub_task_id)
+
+        if not result:
+            sub_tasks = []
+        else:
+            sub_tasks = [
+                SubTask(
+                    sub_task_id=sub_task_orm.sub_task_id,
+                    parent_id=sub_task_orm.parent_id,
+                    description=sub_task_orm.description,
+                    status=sub_task_orm.status,
+                )
+                for sub_task_orm in result
+            ]
+    return sub_tasks

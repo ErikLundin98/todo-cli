@@ -24,6 +24,8 @@ parser_add.add_argument("-p", "--priority", type=parse_task_priority_level, requ
 parser_add.add_argument("-s", "--status", type=TaskStatus, required=False, default=TaskStatus.TODO, help=f"Status to set for task. Defaults to todo", choices=list(TaskStatus))
 parser_add.add_argument("-c", "--category", type=str, nargs="+", required=False, default=[], help="Category/Categories to set for task")
 parser_add.add_argument("-dl", "--deadline", type=parse_datetime, required=False, default=None, help=f"Optional due date of the task (format: {EXPECTED_DATETIME_FORMAT_STRING}). Time is optional, and will default to EOD.")
+parser_add.add_argument("-sub", "--subtasks", type=str, nargs="+", required=False, default=[], help="List of subtasks, in order")
+
 
 parser_update = subparsers.add_parser("update", aliases=["u"], help="Update a task")
 parser_update.add_argument("task", type=int, nargs="+", help="ID of the task(s) to update")
@@ -44,7 +46,6 @@ parser_list.add_argument('--week', action="store_true", help='Filter on actions 
 parser_list.add_argument("-s", "--status", type=TaskStatus, nargs="+", required=False, default=list(TaskStatus), help="Status level to filter for")
 parser_list.add_argument("-i", "--priority", type=parse_task_priority_level, nargs="+", required=False, default=list(TaskPriorityLevel), help="Priority level to filter for")
 parser_list.add_argument("-c", "--category", type=str, nargs="+", required=False, help="Category/categories to filter for")
-
 
 parser_list = subparsers.add_parser("remove", aliases=["rm"], help="Remove tasks completely.")
 parser_list.add_argument("tasks", type=str, nargs="+", help="Task id(s) to remove.")

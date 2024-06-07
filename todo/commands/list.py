@@ -5,7 +5,7 @@ from sqlalchemy.sql.expression import nullslast
 
 from todo import Session
 from todo.constants import TaskPriorityLevel, TaskStatus
-from todo.task_orm import TaskORM, orm_to_pydantic
+from todo.task import TaskORM, task_orm_to_pydantic
 from todo.utils import get_pretty_tasks, is_current_day, is_current_week, is_task_overdue
 
 
@@ -23,7 +23,7 @@ def handle_list(args: Namespace):
             TaskORM.priority.desc(),
         )
         tasks = [
-            orm_to_pydantic(task) for task in result
+            task_orm_to_pydantic(task) for task in result
         ]
     if args.category:
         tasks = [task for task in tasks if set(task.category) & set(args.category)]

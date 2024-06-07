@@ -3,7 +3,7 @@
 from argparse import Namespace
 
 from todo import Session
-from todo.task_orm import TaskORM
+from todo.task import TaskORM
 
 
 def handle_remove(args: Namespace):

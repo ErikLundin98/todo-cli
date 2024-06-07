@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, ForeignKey, Integer, PrimaryKeyConstraint, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import registry
 from datetime import datetime
@@ -23,19 +23,17 @@ class Task(BaseModel):
 
 class SubTask(BaseModel):
     """Subtask class."""
-    task_id: int | None = None
-    parent: Task
+    sub_task_id: int | None = None
+    parent_id: int
     description: str
     status: TaskStatus
-    next_sub_task: SubTask | None
-    previous_sub_task: SubTask | None
 
 Base = declarative_base()
 mapper_registry = registry()
 
 class TaskORM(Base):
     """ORM model for tasks."""
-    __tablename__ = 'tasks'
+    __tablename__ = "tasks"
     
     task_id = Column(Integer, primary_key=True, autoincrement=True)
     description = Column(String)
@@ -46,10 +44,23 @@ class TaskORM(Base):
     deadline = Column(DateTime, nullable=True)
     completion_datetime = Column(DateTime, nullable=True)
 
+class SubTaskORM(Base):
+    """ORM model for subtasks."""
+    __tablename__ = "subtasks"
+
+    sub_task_id = Column(Integer)
+    parent_id = Column(Integer, ForeignKey(TaskORM.task_id))
+    description = Column(String)
+    status = Column(String)
+    __table_args__ = (
+        PrimaryKeyConstraint('parent_id', 'sub_task_id'),
+    )
+    
+
 Base.metadata.create_all(engine)
 
 
-def orm_to_pydantic(task_orm: TaskORM) -> Task:
+def task_orm_to_pydantic(task_orm: TaskORM) -> Task:
     """Convert task ORM object to task pydantic instance."""
     return Task(
         task_id=task_orm.task_id,
@@ -62,7 +73,7 @@ def orm_to_pydantic(task_orm: TaskORM) -> Task:
         completion_datetime=task_orm.completion_datetime
     )
 
-def pydantic_to_orm(task: Task, clone_id: bool = False) -> TaskORM:
+def task_pydantic_to_orm(task: Task, clone_id: bool = False) -> TaskORM:
     """Convert task pydantic instance to ORM"""
     task_orm = TaskORM(
         description=task.description,
