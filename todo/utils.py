@@ -89,9 +89,13 @@ def get_pretty_tasks(tasks: list[Task]):
         
         table += [table_data]
         for subtask in subtasks:
+            if subtask.status == TaskStatus.DONE:
+                description = color_text(subtask.description, CommandLineColor.STRIKETHROUGH)
+            else:
+                description = subtask.description
             table += [[
                 emojize(":left_arrow_curving_right:") + f"{subtask.parent_id}.{subtask.sub_task_id}",
-                subtask.description,
+                description,
                 "",
                 subtask.status,
                 "",

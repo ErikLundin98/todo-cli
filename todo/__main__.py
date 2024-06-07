@@ -63,15 +63,15 @@ parser_sync.add_argument('--push', action="store_true", help='Overwrite remote g
 def main():
     args = parser.parse_args()
     match args.command:
-        case "add":
+        case "add" | "a":
             handle_add(args)
-        case "update":
+        case "update" | "u":
             handle_update(args)
-        case "list":
+        case "list" | "ls":
             handle_list(args)
-        case "remove":
+        case "remove" | "rm":
             handle_remove(args)
-        case "sync":
+        case "sync" | "s":
             handle_sync(args)
         case _:
             print("todo: Could not recognize the given command. Try `todo --help` for usage details.")
