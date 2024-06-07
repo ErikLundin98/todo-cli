@@ -4,7 +4,7 @@ from argparse import Namespace
 
 from todo import Session
 from todo.constants import TaskStatus
-from todo.task import Task, TaskORM, task_orm_to_pydantic, task_pydantic_to_orm
+from todo.task import SubTaskORM, Task, TaskORM, task_orm_to_pydantic, task_pydantic_to_orm
 from todo.utils import get_end_of_day, get_end_of_week
 
 
@@ -30,6 +30,12 @@ def handle_update(args: Namespace):
 
        
         for task_orm in result:
+            for sub_task_id, status in (args.subtasks or {}).items():
+                sub_task: SubTaskORM = session.query(SubTaskORM).filter(
+                    SubTaskORM.parent_id == task_orm.task_id,
+                    SubTaskORM.sub_task_id == int(sub_task_id)
+                ).one()
+                sub_task.status = TaskStatus(status)
             task = task_orm_to_pydantic(task_orm)
             for field_name, new_value in field_args.items():
                 setattr(task, field_name, new_value)

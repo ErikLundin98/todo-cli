@@ -8,7 +8,7 @@ The functionality is currently limited to the following:
 
 ## Backlog
 
-- Add support for subtasks
+- Add support for subtasks (in progress)
 - LLM support to ease task creation
 - Some clever way to integrate with mobile devices
 - Auto sync on updates
@@ -39,7 +39,7 @@ List todos:
 
 `todo add "Wash the dishes" --priority 1 --category home cleaning --today`: Create TODO that needs to be done today with top priority and category "home" and "cleaning"
 
-TODO:s are stored and managed in a sqlite database. As a hacky cross-device sync solution, you can synchronize the database using a git repo:
+TODO:s are stored and managed in a sqlite database. As a hacky cross-device sync solution, you can sync the sqlite database using a git repo:
 
 `todo sync --init-repository <repo_url>`: Clone a remote git repository to use for version handling the database
 

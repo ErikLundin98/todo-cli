@@ -1,3 +1,4 @@
+import argparse
 from datetime import datetime, time, timedelta
 
 from emoji import emojize
@@ -6,6 +7,15 @@ from todo import Session
 from todo.constants import EXPECTED_DATETIME_FORMAT, CommandLineColor, TaskPriorityLevel, TaskStatus
 from todo.task import SubTask, SubTaskORM, Task
 
+
+class ParseKeyValuePairs(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        kv_dict = {}
+        for value in values:
+            key, val = value.split('=', 1)
+            kv_dict[key] = val
+        setattr(namespace, self.dest, kv_dict)
+        
 def parse_task_priority_level(arg: str) -> TaskPriorityLevel:
     return TaskPriorityLevel(int(arg))
 
@@ -106,7 +116,7 @@ def get_pretty_tasks(tasks: list[Task]):
     return tabulate(
         tabular_data=table,
         headers=headers,
-        tablefmt="rst",
+        tablefmt="rounded_grid",
     )
 
 
