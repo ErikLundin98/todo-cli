@@ -5,7 +5,7 @@ from todo.commands.list import handle_list
 from todo.commands.remove import handle_remove
 from todo.commands.sync import handle_sync
 from todo.commands.update import handle_update
-from todo.constants import EXPECTED_DATETIME_FORMAT_STRING, TaskPriorityLevel, TaskStatus
+from todo.constants import EXPECTED_DATETIME_FORMAT_STRING, Frequency, TaskPriorityLevel, TaskStatus
 from todo.utils import ParseKeyValuePairs, parse_datetime, parse_task_priority_level
 
 parser = argparse.ArgumentParser(
@@ -18,25 +18,26 @@ subparsers = parser.add_subparsers(title="sub-commands", dest="command")
 
 parser_add = subparsers.add_parser("add", aliases=["a"], help="Add a new task")
 parser_add.add_argument("description", type=str, help="Description to set for task")
-parser_add.add_argument('--today', action="store_true", help='Shorthand argument for setting deadline to EOD today')
-parser_add.add_argument('--week', action="store_true", help='Shorthand argument for setting deadline to EOW')
-parser_add.add_argument("-p", "--priority", type=parse_task_priority_level, required=False, default=TaskPriorityLevel.LOW, help=f"Priority to set for task. Defaults to low", choices=list(TaskPriorityLevel))
-parser_add.add_argument("-s", "--status", type=TaskStatus, required=False, default=TaskStatus.TODO, help=f"Status to set for task. Defaults to todo", choices=list(TaskStatus))
+parser_add.add_argument('--eod', action="store_true", help='Shorthand argument for setting deadline to EOD')
+parser_add.add_argument('--eow', action="store_true", help='Shorthand argument for setting deadline to EOW')
+parser_add.add_argument("-p", "--priority", type=parse_task_priority_level, required=False, default=TaskPriorityLevel.LOW, help="Priority to set for task. Defaults to low", choices=list(TaskPriorityLevel))
+parser_add.add_argument("-s", "--status", type=TaskStatus, required=False, default=TaskStatus.TODO, help="Status to set for task. Defaults to todo", choices=list(TaskStatus))
 parser_add.add_argument("-c", "--category", type=str, nargs="+", required=False, default=[], help="Category/Categories to set for task")
 parser_add.add_argument("-dl", "--deadline", type=parse_datetime, required=False, default=None, help=f"Optional due date of the task (format: {EXPECTED_DATETIME_FORMAT_STRING}). Time is optional, and will default to EOD.")
 parser_add.add_argument("-sub", "--subtasks", type=str, nargs="+", required=False, default=[], help="List of subtasks, in order")
+parser_add.add_argument("-sc", "--schedule", type=Frequency, required=False, default=None, help="Frequency task to a specific frequency", choices=list(Frequency))
+parser_add.add_argument("-n", "--n_occurrences", type=int, required=False, default=1, help="Number of occurrences for task. Only used if --schedule is used.")
 
 
 parser_update = subparsers.add_parser("update", aliases=["u"], help="Update a task")
 parser_update.add_argument("task", type=int, nargs="+", help="ID of the task(s) to update")
-parser_update.add_argument('--today', action="store_true", help='Shorthand argument for setting deadline to EOD today')
-parser_update.add_argument('--week', action="store_true", help='Shorthand argument for setting deadline to EOW')
+parser_update.add_argument('--eod', action="store_true", help='Shorthand argument for setting deadline to EOD')
+parser_update.add_argument('--eow', action="store_true", help='Shorthand argument for setting deadline to EOW')
 parser_update.add_argument('--done', action="store_true", help='Shorthand argument for marking task(s) as done')
 parser_update.add_argument('--in-progress', action="store_true", help='Shorthand argument for marking task(s) as in progress')
-parser_update.add_argument('--todo', action
-="store_true", help='Shorthand argument for marking task(s) as TODO')
-parser_update.add_argument("-d", "--description", type=str, required=False, help=f"Description to set for task")
-parser_update.add_argument("-p", "--priority", type=parse_task_priority_level, required=False, help=f"Priority to set for task", choices=list(TaskPriorityLevel))
+parser_update.add_argument('--todo', action="store_true", help='Shorthand argument for marking task(s) as TODO')
+parser_update.add_argument("-d", "--description", type=str, required=False, help="Description to set for task")
+parser_update.add_argument("-p", "--priority", type=parse_task_priority_level, required=False, help="Priority to set for task", choices=list(TaskPriorityLevel))
 parser_update.add_argument("-s", "--status", type=TaskStatus, required=False, help="Status to set for task", choices=list(TaskStatus))
 parser_update.add_argument("-c", "--category", type=str, nargs="+", required=False, help="Category/Categories to set for task")
 parser_update.add_argument("-dl", "--deadline", type=parse_datetime, required=False, help=f"Due date of the task (format: {EXPECTED_DATETIME_FORMAT_STRING}). Time is optional, and will default to EOD.")

@@ -1,10 +1,11 @@
 import argparse
 from datetime import datetime, time, timedelta
+import calendar
 
 from emoji import emojize
 from tabulate import tabulate
 from todo import Session
-from todo.constants import EXPECTED_DATETIME_FORMAT, CommandLineColor, TaskPriorityLevel, TaskStatus
+from todo.constants import EXPECTED_DATETIME_FORMAT, CommandLineColor, Frequency, TaskPriorityLevel, TaskStatus
 from todo.task import SubTask, SubTaskORM, Task
 
 
@@ -119,6 +120,36 @@ def get_pretty_tasks(tasks: list[Task]):
         tablefmt="rounded_grid",
     )
 
+def create_date_range(start_datetime: datetime, n: int, frequency: Frequency) -> list[datetime]:
+    """Create date range from start datetime, n occurrences and frequency"""
+    match frequency:
+        case Frequency.DAILY:
+            delta_fn = lambda date_time: date_time + timedelta(days=1)
+        case Frequency.WEEKDAYS:
+            delta_fn = lambda date_time: date_time + timedelta(days=1) if date_time.weekday() <= 3 else date_time + timedelta(days=3)
+        case Frequency.WEEKLY:
+            delta_fn = lambda date_time: date_time + timedelta(weeks=1)
+        case Frequency.MONTHLY:
+            delta_fn = lambda date_time: date_time + timedelta(
+                days=calendar.monthrange(date_time.year, date_time.month)[1]
+            )
+        case Frequency.YEARLY:
+            delta_fn = lambda date_time: datetime(
+                year=date_time.year + 1,
+                month=date_time.month,
+                day=date_time.day,
+                hour=date_time.hour,
+                minute=date_time.minute,
+                second=date_time.second,
+            )
+    
+    date_range = [start_datetime]
+    current_datetime = start_datetime
+    for _ in range(n-1):
+        current_datetime = delta_fn(current_datetime)
+        date_range.append(current_datetime)
+
+    return date_range
 
 def color_text(text: str, color_ansi: CommandLineColor | list[CommandLineColor]):
     """Utility function to create string that will render in specific color in command line."""

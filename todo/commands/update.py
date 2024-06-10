@@ -10,9 +10,9 @@ from todo.utils import get_end_of_day, get_end_of_week
 
 def handle_update(args: Namespace):
     """Handle user using the update command."""
-    if args.today:
+    if args.eod:
         args.deadline = get_end_of_day()
-    elif args.week:
+    elif args.eow:
         args.deadline = get_end_of_week()
     if args.done:
         args.status = TaskStatus.DONE

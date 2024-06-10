@@ -30,6 +30,15 @@ class TaskStatus(StrEnum):
     IN_PROGRESS = auto()
     DONE = auto()
 
+class Frequency(StrEnum):
+    """Frequency option for task."""
+    DAILY = auto()
+    WEEKDAYS = auto()
+    WEEKLY = auto()
+    MONTHLY = auto()
+    QUARTERLY = auto()
+    YEARLY = auto()
+
 class CommandLineColor(StrEnum):
     """ANSI escape codes for colors."""
     BLACK = '\033[30m'
