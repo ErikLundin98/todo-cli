@@ -1,6 +1,7 @@
 import argparse
 
 from todo.commands.add import handle_add
+from todo.commands.ai import handle_ai
 from todo.commands.list import handle_list
 from todo.commands.remove import handle_remove
 from todo.commands.sync import handle_sync
@@ -63,19 +64,60 @@ parser_sync.add_argument(
 parser_sync.add_argument('--pull', action="store_true", help='Overwrite local db with what is in remote git repository')
 parser_sync.add_argument('--push', action="store_true", help='Overwrite remote git repository with what is in local db')
 
+parser_ai = subparsers.add_parser("ai", help="Let AI perform the actions for you")
+parser_ai.add_argument("prompt", type=str, help="Your instructions to the Large Language Model")
+
 def main():
     args = parser.parse_args()
     match args.command:
         case "add" | "a":
-            handle_add(args)
+            handle_add(
+                description=args.description,
+                priority=args.priority,
+                status=args.status,
+                subtasks=args.subtasks,
+                category=args.category,
+                deadline=args.deadline,
+                eod=args.eod,
+                eow=args.eow,
+                schedule=args.schedule,
+                n_occurrences=args.n_occurrences,
+            )
         case "update" | "u":
-            handle_update(args)
+            handle_update(
+                task=args.task,
+                description=args.description,
+                priority=args.priority,
+                category=args.category,
+                eod=args.eod,
+                eow=args.eow,
+                deadline=args.deadline,
+                done=args.done,
+                todo=args.todo,
+                in_progress=args.in_progress,
+                status=args.status,
+                subtasks=args.subtasks,
+            )
         case "list" | "ls":
-            handle_list(args)
+            handle_list(
+                status=args.status,
+                priority=args.priority,
+                category=args.category,
+                week=args.week,
+                today=args.today,
+            )
         case "remove" | "rm":
-            handle_remove(args)
+            handle_remove(
+                tasks=args.tasks,
+            )
         case "sync" | "s":
-            handle_sync(args)
+            handle_sync(
+                init_repository=args.init_repository,
+                pull=args.pull,
+                push=args.push,
+            )
+        case "ai":
+            handle_ai(prompt=args.prompt)
         case _:
             print("todo: Could not recognize the given command. Try `todo --help` for usage details.")
 

@@ -8,11 +8,14 @@ The functionality is currently limited to the following:
 
 ## Backlog
 
+- Config-based
+  - List options
+  - Messages
 - Add support for subtasks (in progress)
-- Add support for recurring tasks
+- [X] Add support for recurring tasks
 - webserver + remote DB support, perhaps using [piku](https://github.com/piku/piku)
 - Speed up
-- Potentially make cli interface more intuitive?
+- [X] Potentially make cli interface more intuitive?
 - LLM support to ease task creation
 - Some clever way to integrate with mobile devices
 - Auto sync on updates

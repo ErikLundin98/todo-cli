@@ -9,10 +9,16 @@ from todo.task import TaskORM, task_orm_to_pydantic
 from todo.utils import get_pretty_tasks, is_current_day, is_current_week, is_task_overdue
 
 
-def handle_list(args: Namespace):
+def handle_list(
+    status: list[TaskStatus] | None = None,
+    priority: list[TaskPriorityLevel] | None = None,
+    category: list[str] = [],
+    week: bool | None = None,
+    today: bool | None = None,
+):
     """Handle user using the list command."""
-    status_filter = args.status or list(TaskStatus)
-    priority_filter = args.priority or list(TaskPriorityLevel)
+    status_filter = status or list(TaskStatus)
+    priority_filter = priority or list(TaskPriorityLevel)
 
     with Session() as session:
         result = session.query(TaskORM).filter(
@@ -25,15 +31,15 @@ def handle_list(args: Namespace):
         tasks = [
             task_orm_to_pydantic(task) for task in result
         ]
-    if args.category:
-        tasks = [task for task in tasks if set(task.category) & set(args.category)]
-    if args.week:
+    if category:
+        tasks = [task for task in tasks if set(task.category) & set(category)]
+    if week:
         tasks = [
             task for task in tasks 
             if task.deadline 
             and (is_current_week(task.deadline) or is_task_overdue(task))
         ]
-    if args.today:
+    if today:
         tasks = [task for task in tasks if task.deadline and (is_current_day(task.deadline) or is_task_overdue(task))]
     if tasks:
         print(get_pretty_tasks(tasks))

@@ -1,39 +1,47 @@
-from argparse import Namespace
 from datetime import datetime
 
 from todo import Session
-from todo.constants import TaskPriorityLevel, TaskStatus
+from todo.constants import Frequency, TaskPriorityLevel, TaskStatus
 from todo.task import SubTask, SubTaskORM, Task, task_pydantic_to_orm
 from todo.utils import create_date_range, get_end_of_day, get_end_of_week
 
 
-def handle_add(args: Namespace):
+def handle_add(
+    description: str,
+    priority: TaskPriorityLevel,
+    status: TaskStatus,
+    subtasks: list[str] = [],
+    category: list[str] = [],
+    deadline: datetime | None = None,
+    eod: bool | None = None,
+    eow: bool | None = None,
+    schedule: Frequency | None = None,
+    n_occurrences: int = 1,
+):
     """Handle user using the add command."""
-    if args.eod:
+    if eod:
         deadline = get_end_of_day()
-    elif args.eow:
+    elif eow:
         deadline = get_end_of_week()
-    else:
-        deadline = args.deadline
 
-    if args.schedule:
+    if schedule:
         if not deadline:
             raise ValueError("A deadline must be supplied for scheduling to be supported.")
         deadlines = create_date_range(
             start_datetime=deadline,
-            n=args.n_occurrences,
-            frequency=args.schedule,
+            n=n_occurrences,
+            frequency=schedule,
         )
     else:
         deadlines = [deadline]
     
     for deadline in deadlines:
         _add_task(
-            description=args.description,
-            priority=args.priority,
-            status=args.status,
-            subtasks=args.subtasks,
-            category=args.category,
+            description=description,
+            priority=priority,
+            status=status,
+            subtasks=subtasks,
+            category=category,
             deadline=deadline,
         )
 
