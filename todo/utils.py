@@ -84,10 +84,13 @@ def get_pretty_tasks(tasks: list[Task]):
             message = color_text("Are you on top of this?", CommandLineColor.YELLOW) + emojize(":spiral_calendar:")
         else:
             message = "No rush." + emojize(":sloth:")
-
+        if task.status == TaskStatus.DONE:
+            description = color_text(task.description, CommandLineColor.STRIKETHROUGH)
+        else:
+            description = task.description
         table_data = [
             task.task_id,
-            task.description,
+            description,
             task.priority,
             task.status,
             task.category,
